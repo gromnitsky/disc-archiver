@@ -58,4 +58,41 @@ suite('DiscArray', function() {
 //	console.log(util.inspect(da, {depth: null}))
     })
 
+    test('save 1 big file onto 3 little discs', function() {
+	let da = new DiscArray(1)
+	da.save({ name: 'big', size: 3 })
+
+	assert.equal(3, da.storage.length)
+	assert.equal(2, da.storage[2].files[0].pos_from)
+	assert.equal(2, da.storage[2].files[0].pos_to)
+
+//	console.log(util.inspect(da, {depth: null}))
+    })
+
+    test('save 1 big file onto 3 discs', function() {
+	let da = new DiscArray(3)
+	da.save({ name: 'small-1', size: 2 })
+	da.save({ name: 'small-2', size: 2 })
+	da.save({ name: 'big', size: 6 })
+
+	assert.equal(4, da.storage.length)
+	// a chunk of 'big' on the 1st disc
+	assert.equal(0, da.storage[0].files[1].pos_from)
+	assert.equal(0, da.storage[0].files[1].pos_to)
+
+	// a chunk of 'big' on the 2nd disc
+	assert.equal(1, da.storage[1].files[1].pos_from)
+	assert.equal(1, da.storage[1].files[1].pos_to)
+
+	// a chunk of 'big' on the 3rd disc
+	assert.equal(2, da.storage[2].files[0].pos_from)
+	assert.equal(4, da.storage[2].files[0].pos_to)
+
+	// a chunk of 'big' on the 4th disc
+	assert.equal(5, da.storage[3].files[0].pos_from)
+	assert.equal(5, da.storage[3].files[0].pos_to)
+
+//	console.log(util.inspect(da, {depth: null}))
+    })
+
 })
