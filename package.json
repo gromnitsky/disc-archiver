@@ -1,0 +1,21 @@
+{
+    "name": "disc-archiver",
+    "private": true,
+    "version": "0.0.1",
+    "description": "Fits big files onto discs in a helpful way",
+    "directories": {
+	"test": "test"
+    },
+    "dependencies": {
+	"sprintf-js": "^1.0.3"
+    },
+    "devDependencies": {
+	"mocha": "^2.5.3"
+    },
+    "keywords": [
+	"backup",
+	"disc"
+    ],
+    "author": "Alexander Gromnitsky",
+    "license": "MIT"
+}
