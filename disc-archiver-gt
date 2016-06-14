@@ -70,6 +70,8 @@ let generate_makefile = function(data, output_dir) {
     }
 
     // 1.iso: file1.dump file2.dump
+    //         @mkdir ...
+    //         genisoimage ...
     let bank = new FileBank(data)
     for (let dir in tree) {
 	let files = tree[dir]
@@ -80,8 +82,7 @@ let generate_makefile = function(data, output_dir) {
 
 	r.push(`${target}: ${deps}`)
 	r.push('\t@mkdir -p $(dir $@)')
-	// FIXME: genisoimage
-	r.push('\ttouch $@')
+	r.push('\tgenisoimage -rJ -input-charset utf-8 $(ISO_OPT) -o $@ $(dir $<)')
 	compile.push(target)
     }
 
@@ -98,7 +99,7 @@ let generate_makefile = function(data, output_dir) {
 	r.push(`${target}: ${file.name}`)
 	r.push('\t@mkdir -p $(dir $@)')
 	if (file.partial()) {
-	    r.push(`\tdd if=$< of=$@ iflag=skip_bytes,count_bytes skip=${file.pos_from} count=${file.pos_to - file.pos_from + 1}`)
+	    r.push(`\tdd if=$< of=$@ bs=64K iflag=skip_bytes,count_bytes skip=${file.pos_from} count=${file.pos_to - file.pos_from + 1}`)
 	} else {
 	    r.push('\tcp $< $@')
 	}
