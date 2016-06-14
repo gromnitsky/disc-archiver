@@ -1,19 +1,24 @@
 #!/usr/bin/env node
 
+'use strict';
+
+let util = require('util')
+let fs = require('fs')
+
 // TODO
 let data = function(files) {
     return [
 	{
 	    name: '__.-0_-h0_-b1024_-z.dump.aes',
-	    size: 4.7
+	    size: 47
 	},
 	{
 	    name: '__boot.-0_-h0_-b1024_-z.dump.aes',
-	    size: 1
+	    size: 10
 	},
 	{
 	    name: '__home.-0_-h0_-b1024_-z.dump.aes',
-	    size: 2.2
+	    size: 22
 	}
     ]
 }
@@ -121,19 +126,72 @@ class DiscArray {
 
 exports.DiscArray = DiscArray
 
-
-let instructions = function(disc_size, data) {
+let print_instructions = function(disc_size, data) {
     let da = new DiscArray(disc_size)
-    for (let file of data_sort(data)) da.save(file)
-
-    let r = []
-    for (let disc in da.storage) {
-	r.push(disc)
+    for (let file of data_sort(data)) {
+	da.save(file)
+//	console.log(util.inspect(da, {depth: null}))
     }
-    return r
+
+    for (let disc of da.storage) {
+	for (let file of disc.files) {
+	    let r = []
+	    r.push(disc.name)
+	    r.push(file.name)
+	    if (typeof file.pos_from !== undefined) {
+		r.push(file.pos_from)
+		r.push(file.pos_to)
+	    }
+	    process.stdout.write(r.join("\t") + "\n")
+	}
+    }
 }
 
+class NumberParser {
+    static parse(str) {
+	str = str.replace(/\s*/g, '')
+	let err = new Error("invalid number")
+	if (!str.length) throw err
 
-if (process.argv[1] === __filename) {
-    console.log(instructions(4.3, data(process.argv.slice(2))))
+	for (let key in NumberParser.media) {
+	    if (key === str) return NumberParser.media[key][0]
+	}
+
+	str = str.replace(/[^0-9]+/g, '')
+	if (!str.length) throw err
+	return parseInt(str)
+    }
 }
+
+NumberParser.media = {
+    floppy: [1457664, '3½, I had those when I was a kid!'],
+    // https://cdburnerxp.se/help/appendices/disctypes
+    cd: [681984000, '"74 minutes of uncompressed audio", lol.'],
+    dvd: [4700372992, 'Single layer, the most conservative number.'],
+    bd: [25025314816, 'Single layer.']
+}
+
+exports.NumberParser = NumberParser
+
+
+
+if (process.argv[1] !== __filename) return
+
+let path = require('path')
+let sprintf = require("sprintf-js").sprintf // becase util.format() is lame
+
+if (process.argv.length < 2+2) {
+    let exe = path.basename(process.argv[1])
+    console.error(`Usage: ${exe} DISC_SIZE file1 [file2 ...]`)
+    console.error(`Example: ${exe} 4,700,000,000 dump_*.aes`)
+    console.error(`Example: ${exe} cd dump_*.aes`)
+    console.error(`\nSupported optional disc size aliases:`)
+    for (let key in NumberParser.media) {
+	let val = NumberParser.media[key]
+	console.error(sprintf('  %-6s  %15s  %s', key, val[0].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),  val[1]))
+    }
+    process.exit(1)
+}
+
+print_instructions(NumberParser.parse(process.argv[2]),
+		   data(process.argv.slice(2)))
