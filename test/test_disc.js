@@ -101,4 +101,24 @@ suite('DiscArray', function() {
 //	console.log(util.inspect(da, {depth: null}))
     })
 
+    test('1 byte to the last disc', function() {
+	let da = new DiscArray(7200)
+	da.save({ name: 'index.md', size:  17})
+	da.save({ name: 'all.md', size:  618})
+	da.save({ name: 'synopsis.md', size:  985})
+	da.save({ name: '_toc.md', size:  1288})
+	da.save({ name: 'string_decoder.md', size:  2384})
+	da.save({ name: 'tty.md', size:  3132})
+	da.save({ name: 'v8.md', size:  3192})
+	da.save({ name: 'documentation.md', size: 3415 })
+	da.save({ name: 'timers.md', size:  3555})
+	da.save({ name: 'punnycode.md', size:  3647})
+	da.save({ name: 'debugger.md', size: 5554 })
+	da.save({ name: 'globals.md', size: 5599 })
+	da.save({ name: 'cli.md', size: 5975 })
+	da.save({ name: 'https.md', size: 7463 })
+
+//	console.log(util.inspect(da, {depth: null}))
+    })
+
 })

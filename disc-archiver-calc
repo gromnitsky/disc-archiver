@@ -2,6 +2,8 @@
 
 'use strict';
 
+let util = require('util')
+
 // an obligatory omglol
 let dup = function(obj) {
     return JSON.parse(JSON.stringify(obj))
@@ -80,22 +82,22 @@ class DiscArray {
 		if (!disc.free) continue
 		pos_to = pos_from + disc.free - 1
 		if (pos_to >= file.size) pos_to = file.size - 1
+//		console.error('\n\n---------\n', disc.name, file.name, pos_from, pos_to)
+//		console.error(util.inspect(this.storage, {depth: null}))
 		disc.add_partial(file, pos_from, pos_to)
 		pos_from = pos_to + 1
+
+		if (pos_to === file.size - 1) return true
 	    }
 
-//	    console.log(pos_from, pos_to)
-
-	    if (pos_to !== file.size - 1) {
-		// an additional disc is requied
-		this.storage.push(new Disc(this.storage.length + 1,
-					   this.disc_size))
-		// RECURSION!
-		return this.save(file, pos_from)
-	    }
+	    // an additional disc is requied
+	    this.storage.push(new Disc(this.storage.length + 1,
+				       this.disc_size))
+	    // RECURSION!
+	    return this.save(file, pos_from)
 	}
 
-	return true
+	throw new Error('should not be here')
     }
 }
 
@@ -132,7 +134,6 @@ exports.NumberParser = NumberParser
 if (process.argv[1] !== __filename) return
 
 let path = require('path')
-let util = require('util')
 let fs = require('fs')
 let sprintf = require("sprintf-js").sprintf // becase util.format() is lame
 
