@@ -10,6 +10,9 @@ let u = require('./lib/u')
 
 let parse_line = function(line) {
     line = line.trim().split("\t")
+    // check if path is relative
+    let re = new RegExp(`\.\.${path.sep}`)
+    if (line[1].match(re)) throw new Error("relative paths aren't allowed")
     return {
 	dir: line[0],
 	name: line[1],
@@ -35,12 +38,6 @@ class FileBank {
 	}
     }
 
-    local_name(str) {
-	let common_prefix = path.dirname(process.cwd()) + path.sep
-	let abs = path.resolve(str)
-	return abs.replace(common_prefix, '')
-    }
-
     // file is an object that parse_line() returns
     name(file) {
 	if (!file.partial()) return file.name
@@ -48,7 +45,7 @@ class FileBank {
 	let f = this.files[file.name]
 	f.current += 1
 	let cur = u.pad(f.current, u.numlen(f.max))
-	return `${this.local_name(file.name)}.part-${cur}-of-${f.max}`
+	return `${file.name}.part-${cur}-of-${f.max}`
     }
 }
 
