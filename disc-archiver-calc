@@ -121,10 +121,12 @@ class NumberParser {
 
 NumberParser.media = {
     floppy: [1457664, '3½, I had those when I was a kid!'],
-    // https://cdburnerxp.se/help/appendices/disctypes
-    cd: [681984000, '"74 minutes of uncompressed audio", lol.'],
-    dvd: [4700372992, 'Single layer, the most conservative number.'],
-    bd: [25025314816, 'Single layer.']
+    // https://cdburnerxp.se/help/appendices/disctypes, minus a ~1 MB
+    // for the iso fs overhead (the exact metadata size depends on the
+    // amount of files & the length of their names).
+    cd: [681000000, '"74 minutes of uncompressed audio", lol.'],
+    dvd: [4700000000, 'Single layer.'],
+    bd: [25024000000, 'Single layer.']
 }
 
 exports.NumberParser = NumberParser
