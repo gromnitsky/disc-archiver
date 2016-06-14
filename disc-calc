@@ -2,31 +2,6 @@
 
 'use strict';
 
-let util = require('util')
-let fs = require('fs')
-
-// TODO
-let data = function(files) {
-    return [
-	{
-	    name: '__.-0_-h0_-b1024_-z.dump.aes',
-	    size: 47
-	},
-	{
-	    name: '__boot.-0_-h0_-b1024_-z.dump.aes',
-	    size: 10
-	},
-	{
-	    name: '__home.-0_-h0_-b1024_-z.dump.aes',
-	    size: 22
-	}
-    ]
-}
-
-let data_sort = function(d) {
-    return d.sort( (a, b) => a.size - b.size )
-}
-
 // an obligatory omglol
 let dup = function(obj) {
     return JSON.parse(JSON.stringify(obj))
@@ -126,27 +101,6 @@ class DiscArray {
 
 exports.DiscArray = DiscArray
 
-let print_instructions = function(disc_size, data) {
-    let da = new DiscArray(disc_size)
-    for (let file of data_sort(data)) {
-	da.save(file)
-//	console.log(util.inspect(da, {depth: null}))
-    }
-
-    for (let disc of da.storage) {
-	for (let file of disc.files) {
-	    let r = []
-	    r.push(disc.name)
-	    r.push(file.name)
-	    if (typeof file.pos_from !== undefined) {
-		r.push(file.pos_from)
-		r.push(file.pos_to)
-	    }
-	    process.stdout.write(r.join("\t") + "\n")
-	}
-    }
-}
-
 class NumberParser {
     static parse(str) {
 	str = str.replace(/\s*/g, '')
@@ -178,7 +132,41 @@ exports.NumberParser = NumberParser
 if (process.argv[1] !== __filename) return
 
 let path = require('path')
+let util = require('util')
+let fs = require('fs')
 let sprintf = require("sprintf-js").sprintf // becase util.format() is lame
+
+let data = function(files) {
+    let r = []
+    files.forEach( (file) => r.push({name: file,
+				     size: fs.statSync(file).size}) )
+    return r
+}
+
+let data_sort = function(d) {
+    return d.sort( (a, b) => a.size - b.size )
+}
+
+let print_instructions = function(disc_size, data) {
+    let da = new DiscArray(disc_size)
+    for (let file of data_sort(data)) {
+	da.save(file)
+//	console.log(util.inspect(da, {depth: null}))
+    }
+
+    for (let disc of da.storage) {
+	for (let file of disc.files) {
+	    let r = []
+	    r.push(disc.name)
+	    r.push(file.name)
+	    if (typeof file.pos_from !== undefined) {
+		r.push(file.pos_from)
+		r.push(file.pos_to)
+	    }
+	    process.stdout.write(r.join("\t") + "\n")
+	}
+    }
+}
 
 if (process.argv.length < 2+2) {
     let exe = path.basename(process.argv[1])
@@ -194,4 +182,4 @@ if (process.argv.length < 2+2) {
 }
 
 print_instructions(NumberParser.parse(process.argv[2]),
-		   data(process.argv.slice(2)))
+		   data(process.argv.slice(3)))
