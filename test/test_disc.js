@@ -3,8 +3,8 @@
 let assert = require('assert')
 let util = require('util')
 
-let Disc = require('../disc-calc').Disc
-let DiscArray = require('../disc-calc').DiscArray
+let Disc = require('../disc-archiver-calc').Disc
+let DiscArray = require('../disc-archiver-calc').DiscArray
 
 suite('Disc', function() {
 

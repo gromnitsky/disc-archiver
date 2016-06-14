@@ -3,7 +3,7 @@
 let assert = require('assert')
 let util = require('util')
 
-let NumberParser = require('../disc-calc').NumberParser
+let NumberParser = require('../disc-archiver-calc').NumberParser
 
 suite('NumberParser', function() {
 
