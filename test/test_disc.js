@@ -33,6 +33,12 @@ suite('Disc', function() {
 
 suite('DiscArray', function() {
 
+    test('saving a 0 length file should fail', function() {
+	let da = new DiscArray(4)
+	assert.equal(false, da.save({ name: 'empty', size: 0 }))
+	assert.equal(0, da.storage[0].files.length)
+    })
+
     test('save 3 files, 2 of which fit in 1 disc', function() {
 	let da = new DiscArray(4)
 	da.save({ name: 'small-1', size: 2 })

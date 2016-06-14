@@ -80,6 +80,8 @@ class DiscArray {
     }
 
     save(file, pos_from) {
+	if (file.size <= 0) return false
+
 	if (file.size <= this.disc_size) {
 	    // try to find a free space for this file
 	    for (let disc of this.storage) {
@@ -88,7 +90,7 @@ class DiscArray {
 	    // all discs are filled w/ something, we need a new one
 	    let d = new Disc(this.storage.length + 1, this.disc_size)
 	    d.add(file)
-	    this.storage.push(d)
+	    return this.storage.push(d)
 
 	} else {
 	    // the file is too big for the size of a single disc
@@ -109,9 +111,11 @@ class DiscArray {
 		this.storage.push(new Disc(this.storage.length + 1,
 					   this.disc_size))
 		// RECURSION!
-		this.save(file, pos_from)
+		return this.save(file, pos_from)
 	    }
 	}
+
+	return true
     }
 }
 
