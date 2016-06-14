@@ -6,6 +6,8 @@ let readline = require('readline')
 let path = require('path')
 let util = require('util')
 
+let u = require('./lib/u')
+
 let parse_line = function(line) {
     line = line.trim().split("\t")
     return {
@@ -16,10 +18,6 @@ let parse_line = function(line) {
 
 	partial() { return !(isNaN(this.pos_from) && isNaN(this.pos_to)) }
     }
-}
-
-let pad = function(num, max_str_len) {
-    return ((new Array(max_str_len)).join('0') + num).slice(-max_str_len)
 }
 
 class FileBank {
@@ -49,7 +47,7 @@ class FileBank {
 
 	let f = this.files[file.name]
 	f.current += 1
-	let cur = pad(f.current, f.max.toString().length)
+	let cur = u.pad(f.current, u.numlen(f.max))
 	return `${this.local_name(file.name)}.part-${cur}-of-${f.max}`
     }
 }

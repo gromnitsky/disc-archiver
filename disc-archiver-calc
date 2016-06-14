@@ -137,6 +137,8 @@ let path = require('path')
 let fs = require('fs')
 let sprintf = require("sprintf-js").sprintf // becase util.format() is lame
 
+let u = require('./lib/u')
+
 let data = function(files) {
     let r = []
     files.forEach( (file) => r.push({name: file,
@@ -158,7 +160,7 @@ let print_instructions = function(disc_size, data) {
     for (let disc of da.storage) {
 	for (let file of disc.files) {
 	    let r = []
-	    r.push(disc.name)
+	    r.push(u.pad(disc.name, u.numlen(da.storage.length)))
 	    r.push(file.name)
 	    if (typeof file.pos_from !== undefined) {
 		r.push(file.pos_from)
