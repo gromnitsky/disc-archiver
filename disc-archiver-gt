@@ -18,6 +18,10 @@ let parse_line = function(line) {
     }
 }
 
+let pad = function(num, max_str_len) {
+    return ((new Array(max_str_len)).join('0') + num).slice(-max_str_len)
+}
+
 class FileBank {
     constructor(data) {
 	this.files = {}
@@ -45,8 +49,8 @@ class FileBank {
 
 	let f = this.files[file.name]
 	f.current += 1
-	// FIXME: pad f.current
-	return `${this.local_name(file.name)}.part-${f.current}-of-${f.max}`
+	let cur = pad(f.current, f.max.toString().length)
+	return `${this.local_name(file.name)}.part-${cur}-of-${f.max}`
     }
 }
 
