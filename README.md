@@ -1,8 +1,8 @@
 # disc-archiver
 
-Calculates the exact amount of required discs for the set of
-files. Generates a makefile to that produces .iso files suitable for
-burning to dvd/bd.
+Calculates the exact minimum amount of required discs for the set of
+files. Generates a makefile that splits those files & produces correct
+iso images.
 
 ## Why?
 
@@ -96,7 +96,7 @@ out/src/3/root.dump.aes.part-3-of-3: root.dump.aes
 	dd if=$< of=$@ bs=64K iflag=skip_bytes,count_bytes skip=29 count=11
 ```
 
-If we indeed run the Makefile, we'll get 3 .iso files in `out/iso`
+If we indeed run the Makefile, we'll get 3 iso images in `out/iso`
 directory:
 
 ```
@@ -109,6 +109,7 @@ total 1100K
 -rw-r--r-- 1 alex users 372736 Jun 15 01:37 2.iso
 -rw-r--r-- 1 alex users 372736 Jun 15 01:37 3.iso
 ```
+
 We can also check that `root.dump.aes` was splitted correctly:
 
 ```
@@ -128,10 +129,11 @@ $ sha256sum omglol root.dump.aes
 
 ## Bugs
 
-* As it uses Make, files names w/ spaces aren't allowed.
+* As it uses GNU Make, files names w/ spaces aren't allowed.
 
 * It takes 3 times more disk space to create all this rigmarole
   (splitted/copied files in `out/src` + .iso in `out/iso`).
+
 
 ## License
 
