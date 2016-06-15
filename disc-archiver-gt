@@ -8,11 +8,15 @@ let util = require('util')
 
 let u = require('./lib/u')
 
+// we cannot just indexOf for `..${path.sep}` because under Cygwin
+// `../foo` would be a valid path
+let is_path_relative = function(str) {
+    return str.match(/\.\.[\\/]/)
+}
+
 let parse_line = function(line) {
     line = line.trim().split("\t")
-    // check if path is relative
-    let re = new RegExp(`\.\.${path.sep}`)
-    if (line[1].match(re)) throw new Error("relative paths aren't allowed")
+    if (is_path_relative(line[1])) throw new Error("relative paths aren't allowed")
     return {
 	dir: line[0],
 	name: line[1],
