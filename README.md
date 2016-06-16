@@ -63,22 +63,6 @@ $ cat Makefile
 .PHONY: compile
 compile:
 
-out/iso/1.iso: out/src/1/boot.dump.aes \
-	out/src/1/home.dump.aes \
-	out/src/1/root.dump.aes.part-1-of-3
-	@mkdir -p $(dir $@)
-	genisoimage -rJ -input-charset utf-8 $(ISO_OPT) -o $@ $(dir $<)
-out/iso/2.iso: out/src/2/root.dump.aes.part-2-of-3
-	@mkdir -p $(dir $@)
-	genisoimage -rJ -input-charset utf-8 $(ISO_OPT) -o $@ $(dir $<)
-out/iso/3.iso: out/src/3/root.dump.aes.part-3-of-3
-	@mkdir -p $(dir $@)
-	genisoimage -rJ -input-charset utf-8 $(ISO_OPT) -o $@ $(dir $<)
-
-compile: out/iso/1.iso \
-	out/iso/2.iso \
-	out/iso/3.iso
-
 out/src/1/boot.dump.aes: boot.dump.aes
 	@mkdir -p $(dir $@)
 	cp $< $@
@@ -94,6 +78,22 @@ out/src/2/root.dump.aes.part-2-of-3: root.dump.aes
 out/src/3/root.dump.aes.part-3-of-3: root.dump.aes
 	@mkdir -p $(dir $@)
 	dd if=$< of=$@ bs=64K iflag=skip_bytes,count_bytes skip=29 count=11
+
+out/iso/1.iso: out/src/1/boot.dump.aes \
+		out/src/1/home.dump.aes \
+		out/src/1/root.dump.aes.part-1-of-3
+	@mkdir -p $(dir $@)
+	genisoimage -rJ -input-charset utf-8 $(ISO_OPT) -o $@ $(dir $<)
+out/iso/2.iso: out/src/2/root.dump.aes.part-2-of-3
+	@mkdir -p $(dir $@)
+	genisoimage -rJ -input-charset utf-8 $(ISO_OPT) -o $@ $(dir $<)
+out/iso/3.iso: out/src/3/root.dump.aes.part-3-of-3
+	@mkdir -p $(dir $@)
+	genisoimage -rJ -input-charset utf-8 $(ISO_OPT) -o $@ $(dir $<)
+
+compile: out/iso/1.iso \
+	out/iso/2.iso \
+	out/iso/3.iso
 ```
 
 If we indeed run the Makefile, we'll get 3 iso images in `out/iso`
