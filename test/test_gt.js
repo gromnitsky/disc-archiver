@@ -9,6 +9,8 @@ let fs = require('fs')
 suite('disc-archiver-gt', function() {
 
     suiteSetup(function() {
+	if (process.platform === "win32") this.skip()
+
 	this.tmp = fs.mkdtempSync(path.join(__dirname, 'tmp.'))
 	this.save_dir = process.cwd()
 	process.chdir(this.tmp)
