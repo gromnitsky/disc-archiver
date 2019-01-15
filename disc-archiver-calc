@@ -131,9 +131,8 @@ NumberParser.media = {
 
 exports.NumberParser = NumberParser
 
-
 
-if (process.argv[1] !== __filename) return
+if (require.main !== module) return
 
 let path = require('path')
 let fs = require('fs')
